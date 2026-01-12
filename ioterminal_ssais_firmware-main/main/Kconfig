@@ -1,0 +1,223 @@
+menu "Project configuration"
+    menu "Peripheral configuration"
+            menu "System state configuration"  
+                config SYS_STATE_LED_PIN
+                    int  "SYS_STATE_LED_PIN"
+                    range 0 48
+                    default 42
+                    help
+                        The pin number of the system state indicator LED. 
+                        The default is 42, which is the GPIO42 of the ESP32S3 chip.
+
+                config  IS_LED_ON_WHEN_LEVEL_HIGH
+                    int "IS_LED_ON_WHEN_LEVEL_HIGH"
+                    range 0 1
+                    default 0
+                    help
+                        Will the LED light up at high levels                        
+            endmenu
+            menu "Digital output configuration"
+                config  IS_OUTPUT_ENABLE_WHEN_LEVEL_HIGH
+                    int "IS_OUTPUT_ENABLE_WHEN_LEVEL_HIGH"
+                    range 0 1
+                    default 0
+                    help
+                        Can the device only function when the pin output is at a high level
+
+                config DIGITAL_OUTPUT1_PIN
+                    int  "DIGITAL_OUTPUT1_PIN"
+                    range 0 48
+                    default 12
+                    help
+                        The pin number of the digital output 1. 
+                        The default is 12, which is the GPIO12 of the ESP32S3 chip.
+
+                config DIGITAL_OUTPUT2_PIN
+                    int  "DIGITAL_OUTPUT2_PIN"
+                    range 0 48
+                    default 11
+                    help
+                        The pin number of the digital output 2. 
+                        The default is 11, which is the GPIO11 of the ESP32S3 chip.
+            endmenu
+            menu "Digital input configuration"
+                config  IS_IO_LEVEL_HIGH_WHEN_INPUT_GROUNDING
+                    int "IS_IO_LEVEL_HIGH_WHEN_INPUT_GROUNDING"
+                    range 0 1
+                    default 0
+                    help
+                        Is the IO level high when the input is grounded
+
+                config DIGITAL_INPUT1_PIN
+                    int  "DIGITAL_INPUT1_PIN"
+                    range 0 48
+                    default 9
+                    help
+                        The pin number of the digital input 1. 
+                        The default is 9, which is the GPIO9 of the ESP32S3 chip.
+
+                config DIGITAL_INPUT2_PIN
+                    int  "DIGITAL_INPUT2_PIN"
+                    range 0 48
+                    default 3
+                    help
+                        The pin number of the digital input 2. 
+                        The default is 3, which is the GPIO3 of the ESP32S3 chip.
+            endmenu
+            menu "RS485 configuration"
+                config RS485_RTS_PIN
+                    int "RS485_RTS_PIN"
+                    range 0 48
+                    default 8
+                    help
+                        The pin number of the RS485 RTS. 
+
+                config RS485_TXD_PIN
+                    int "RS485_TXD_PIN"
+                    range 0 48
+                    default 17
+                    help
+                        The pin number of the RS485 TXD. 
+
+                config RS485_RXD_PIN
+                    int "RS485_RXD_PIN"
+                    range 0 48
+                    default 18
+                    help
+                        The pin number of the RS485 RXD. 
+            endmenu
+            menu "Alarm led configuration"
+                config  IS_LIGHT_ON_WHEN_LEVEL_HIGH
+                    int "IS_LIGHT_ON_WHEN_LEVEL_HIGH"
+                    range 0 1
+                    default 1
+                    help
+                        Can the device only function when the pin output is at a high level
+            
+                config ALARM_LED_BEEP_PIN
+                    int  "ALARM_LED_BEEP_PIN"
+                    range 0 48
+                    default 7
+                    help            
+                        The pin number of the alarmled beep pin. 
+                        The default is 7, which is the GPIO7 of the ESP32S3 chip.
+
+                config ALARM_LED_RED_PIN
+                    int  "ALARM_LED_RED_PIN"
+                    range 0 48
+                    default 6
+                    help            
+                        The pin number of the alarmled red indicator LED. 
+                        The default is 6, which is the GPIO6 of the ESP32S3 chip.
+
+                config ALARM_LED_YELLOW_PIN
+                    int  "ALARM_LED_YELLOW_PIN"
+                    range 0 48
+                    default 5
+                    help            
+                        The pin number of the alarmled yellow indicator LED. 
+                        The default is 5, which is the GPIO5 of the ESP32S3 chip.                
+
+                config ALARM_LED_GREEN_PIN
+                    int  "ALARM_LED_GREEN_PIN"
+                    range 0 48
+                    default 4
+                    help            
+                        The pin number of the alarmled green indicator LED. 
+                        The default is 4, which is the GPIO4 of the ESP32S3 chip.           
+            endmenu     
+            menu "Screen configuration"      
+                config  IS_POWER_ON_WHEN_LEVEL_HIGH
+                    int "IS_POWER_ON_WHEN_LEVEL_HIGH"
+                    range 0 1
+                    default 1
+                    help
+                        Is the screen only powered when the pin outputs a high level
+            
+                config SCREEN_UART_BAUDRATE
+                    int  "SCREEN_UART_BAUDRATE"
+                    default 115200
+                    help            
+                        The baudrate of the screen uart.     
+            
+                config SCREEN_CMD_MAX_SIZE
+                    int  "SCREEN_CMD_MAX_SIZE"
+                    default 128
+                    help            
+                        The size of a single screen command needs to be adjusted according to the complexity of the screen command.
+            
+                config SCREEN_UART_QUEUE_MAX_SIZE
+                    int  "SCREEN_UART_QUEUE_MAX_SIZE"
+                    default 20
+                    help            
+                        The maximum size of the screen uart queue. The larger the size, the more screen serial port instructions can be temporarily stored   
+                                      
+                config SCREEN_POWER_ENABLE_PIN
+                    int  "SCREEN_POWER_ENABLE_PIN"
+                    range 0 48
+                    default 37
+                    help            
+                        The pin number of the screen power enable pin. 
+                    
+                config SCREEN_UART_TX_PIN
+                    int  "SCREEN_UART_TX_PIN"
+                    range 0 48
+                    default 38
+                    help            
+                        The pin number of the screen uart tx pin.
+                
+                config SCREEN_UART_RX_PIN
+                    int  "SCREEN_UART_RX_PIN"
+                    range 0 48
+                    default 39
+                    help            
+                        The pin number of the screen uart rx pin.        
+            endmenu
+            menu "Ethernet configuration"                       
+                config ETH_SCLK_PIN
+                    int  "ETH_SCLK_PIN"
+                    range 0 48
+                    default 36
+                    help            
+                        The pin number of the ETH SPI Interface.                                  
+                config ETH_MISO_PIN
+                    int  "ETH_MISO_PIN"
+                    range 0 48
+                    default 47
+                    help            
+                        The pin number of the ETH SPI Interface.  
+                config ETH_MOSI_PIN
+                    int  "ETH_MOSI_PIN"
+                    range 0 48
+                    default 21
+                    help            
+                        The pin number of the ETH SPI Interface.                                  
+                config ETH_SCS_PIN
+                    int  "ETH_SCS_PIN"
+                    range 0 48
+                    default 48
+                    help            
+                        The pin number of the ETH SPI Interface.  
+                config ETH_INT_PIN
+                    int  "ETH_INT_PIN"
+                    range 0 48
+                    default 14
+                    help            
+                        The pin number of the ETH SPI Interface.  
+                config ETH_RST_PIN
+                    int  "ETH_RST_PIN"
+                    range 0 48
+                    default 13
+                    help            
+                        The pin number of the ETH SPI Interface.  
+            endmenu
+            menu "LED strip configuration"   
+                config LED_STRIP_PIN
+                    int  "LED_STRIP_PIN"
+                    range 0 48
+                    default 10
+                    help            
+                        The pin number of the led strip data\DIN pin.  
+            endmenu             
+    endmenu         
+endmenu        
