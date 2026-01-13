@@ -1,0 +1,95 @@
+dependencies:
+  espressif/button:
+    component_hash: c3ee3ba339a3848977496d0157008ae574a24fc59f54d27c93ab51b14446a2fb
+    dependencies:
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    - name: idf
+      require: private
+      version: '>=4.0'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 3.3.1
+  espressif/cmake_utilities:
+    component_hash: 351350613ceafba240b761b4ea991e0f231ac7a9f59a9ee901f751bddc0bb18f
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.1'
+    source:
+      registry_url: https://components.espressif.com
+      type: service
+    version: 0.5.3
+  espressif/esp-modbus:
+    component_hash: 2168e6b4cbda4d0281a2a2d1a40a3848e231473b2690d73217e3600fd2c98c12
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.3'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.0.16
+  espressif/led_indicator:
+    component_hash: 8ffbd4d0c3f996c10b5d4d23e1f13fa012684e7f97369a0d5442b8d58e6b587f
+    dependencies:
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    - name: espressif/led_strip
+      registry_url: https://components.espressif.com
+      require: public
+      version: '>=2.5.2'
+    - name: idf
+      require: private
+      version: '>=4.0'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.9.3
+  espressif/usb_host_hid:
+    component_hash: eabf03fe3cb1bdb5325d2725f420c6324c3e150033d893ce3737222929455a55
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.4'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    targets:
+    - esp32s2
+    - esp32s3
+    - esp32p4
+    version: 1.0.3
+  idf:
+    source:
+      type: idf
+    version: 5.2.1
+  ioterminal/led_strip:
+    dependencies:
+    - name: idf
+      version: '>=4.4'
+    source:
+      path: D:\WorkSpace\DojoDemo\SSAIS-STAGE-Dojo-LEDSTRIP\components\led_strip
+      type: local
+    version: 2.5.4
+  led_strip:
+    dependencies: []
+    source:
+      path: D:\WorkSpace\DojoDemo\SSAIS-STAGE-Dojo-LEDSTRIP\components\led_strip
+      type: local
+    version: 2.5.4
+direct_dependencies:
+- espressif/button
+- espressif/esp-modbus
+- espressif/led_indicator
+- espressif/usb_host_hid
+- idf
+- ioterminal/led_strip
+manifest_hash: 4aae1234a23ff59a182ec40ccad050dbf5ff88e484ed64c18f2abca522d620ac
+target: esp32s3
+version: 2.0.0
