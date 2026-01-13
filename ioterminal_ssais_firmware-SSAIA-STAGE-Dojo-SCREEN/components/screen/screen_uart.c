@@ -1,0 +1,157 @@
+/**
+ * @file screen_uart.c
+ * @brief 大彩串口屏ESP32S3串口驱动
+ * @author ChenJinBo (VP01130@globalymc.com)
+ * @version 1.0
+ * @date 2023-12-18
+ *
+ * @copyright Copyright (c) 2023  雅马哈发动机（厦门）信息系统有限公司
+ *
+ */
+#include <stdio.h>
+#include <string.h>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/queue.h"
+#include "driver/uart.h"
+#include "esp_log.h"
+#include "sdkconfig.h"
+
+// 私有头文件
+#include "screen_uart.h"
+#include "screen_queue.h"
+
+static const char *TAG = "SCREEN_UART";
+
+#define EX_UART_NUM UART_NUM_2
+#define PATTERN_CHR_NUM (3) /*!< Set the number of consecutive and identical characters received by receiver which defines a UART pattern*/
+#define UART2EVEN_TASK_PRIVILEGE 12
+
+#define BUF_SIZE (1024)
+#define RD_BUF_SIZE (BUF_SIZE)
+#define SCREEN_UART_QUEUE_MAX_SIZE CONFIG_SCREEN_UART_QUEUE_MAX_SIZE
+static QueueHandle_t uart2_queue;
+
+void mqttPubScreenProgressBarMsg(uint16_t controlType,
+                                 uint16_t notifyType,
+                                 uint32_t screen_id,
+                                 uint32_t control_id,
+                                 uint32_t value);
+
+static void uart_event_task(void *pvParameters)
+{
+    uart_event_t event;
+    uint8_t *dtmp = (uint8_t *)malloc(RD_BUF_SIZE);
+    for (;;)
+    {
+        // Waiting for UART event.
+        if (xQueueReceive(uart2_queue, (void *)&event, (TickType_t)portMAX_DELAY))
+        {
+            bzero(dtmp, RD_BUF_SIZE);
+            // ESP_LOGI(TAG, "uart[%d] event:", EX_UART_NUM);
+            switch (event.type)
+            {
+            // Event of UART receving data
+            /*We'd better handler data event fast, there would be much more data events than
+            other types of events. If we take too much time on data event, the queue might
+            be full.*/
+            case UART_DATA:
+                // ESP_LOGI(TAG, "[UART DATA]: %d", event.size);
+                uart_read_bytes(EX_UART_NUM, dtmp, event.size, portMAX_DELAY);
+                ESP_LOG_BUFFER_HEX("UART", dtmp, event.size);
+                if (event.size >= 13 &&
+                    dtmp[0] == 0xEE &&
+                    dtmp[1] == 0xB1 &&
+                    dtmp[2] == 0x11 &&
+                    dtmp[3] == 0x00 && dtmp[4] == 0x14 && // screen_id = 20
+                    dtmp[5] == 0x00 && dtmp[6] == 0x23 && // control_id = 35
+                    dtmp[7] == 0x13)                      // 滑块类型
+                {
+                    uint32_t slider_val = ((uint32_t)dtmp[8] << 24) |
+                                          ((uint32_t)dtmp[9] << 16) |
+                                          ((uint32_t)dtmp[10] << 8) |
+                                          ((uint32_t)dtmp[11]);
+                    mqttPubScreenProgressBarMsg(19, 1, 20, 35, slider_val);
+                }
+
+                for (size_t i = 0; i < event.size; i++)
+                {
+                    queue_push(*(dtmp + i));
+                }
+                break;
+            // Event of HW FIFO overflow detected
+            case UART_FIFO_OVF:
+                ESP_LOGI(TAG, "hw fifo overflow");
+                // If fifo overflow happened, you should consider adding flow control for your application.
+                // The ISR has already reset the rx FIFO,
+                // As an example, we directly flush the rx buffer here in order to read more data.
+                uart_flush_input(EX_UART_NUM);
+                xQueueReset(uart2_queue);
+                break;
+            // Event of UART ring buffer full
+            case UART_BUFFER_FULL:
+                ESP_LOGI(TAG, "ring buffer full");
+                // If buffer full happened, you should consider encreasing your buffer size
+                // As an example, we directly flush the rx buffer here in order to read more data.
+                uart_flush_input(EX_UART_NUM);
+                xQueueReset(uart2_queue);
+                break;
+            // Event of UART RX break detected
+            case UART_BREAK:
+                ESP_LOGI(TAG, "uart rx break");
+                break;
+            // Event of UART parity check error
+            case UART_PARITY_ERR:
+                ESP_LOGI(TAG, "uart parity error");
+                break;
+            // Event of UART frame error
+            case UART_FRAME_ERR:
+                ESP_LOGI(TAG, "uart frame error");
+                break;
+            // Others
+            default:
+                ESP_LOGI(TAG, "uart event type: %d", event.type);
+                break;
+            }
+        }
+    }
+    free(dtmp);
+    dtmp = NULL;
+    vTaskDelete(NULL);
+}
+
+void screenInit(int baud, int txPin, int rxPix)
+{
+    /* Configure parameters of an UART driver,
+     * communication pins and install the driver */
+    uart_config_t uart_config = {
+        .baud_rate = baud,
+        .data_bits = UART_DATA_8_BITS,
+        .parity = UART_PARITY_DISABLE,
+        .stop_bits = UART_STOP_BITS_1,
+        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
+        .source_clk = UART_SCLK_DEFAULT,
+    };
+    // Install UART driver, and get the queue.
+    uart_driver_install(EX_UART_NUM, BUF_SIZE * 2, BUF_SIZE * 2, SCREEN_UART_QUEUE_MAX_SIZE, &uart2_queue, 0);
+    uart_param_config(EX_UART_NUM, &uart_config);
+
+    // Set UART pins (using UART0 default pins ie no changes.)
+    uart_set_pin(EX_UART_NUM, txPin, rxPix, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+
+    // Reset the pattern queue length to record at most 20 pattern positions.
+    uart_pattern_queue_reset(EX_UART_NUM, SCREEN_UART_QUEUE_MAX_SIZE);
+
+    // Create a task to handler UART event from ISR
+    xTaskCreate(uart_event_task, "uart_event_task", 8192, NULL, UART2EVEN_TASK_PRIVILEGE | portPRIVILEGE_BIT, NULL);
+    queue_reset(); // 串口屏队列初始化
+}
+
+/*!
+ *   \brief  发送1个字节
+ *   \param  t 发送的字节
+ */
+void sendChar(uint8_t t)
+{
+    uart_write_bytes(EX_UART_NUM, (char *)&t, 1);
+}

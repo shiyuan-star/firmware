@@ -1,0 +1,22 @@
+## IDF Component Manager Manifest File
+dependencies:
+  cherry-embedded/cherryusb: "==1.4.3"
+  espressif/led_indicator: "==0.9.3"
+  espressif/button: "==3.4.0"
+  espressif/esp-modbus: "==1.0.16"
+  ioterminal/led_strip:
+    path: '../components/led_strip'
+  ## Required IDF version
+  idf:
+    version: ">=5.2.1"
+  # # Put list of dependencies here
+  # # For components maintained by Espressif:
+  # component: "~1.0.0"
+  # # For 3rd party components:
+  # username/component: ">=1.0.0,<2.0.0"
+  # username2/component2:
+  #   version: "~1.0.0"
+  #   # For transient dependencies `public` flag can be set.
+  #   # `public` flag doesn't have an effect dependencies of the `main` component.
+  #   # All dependencies of `main` are public by default.
+  #   public: true

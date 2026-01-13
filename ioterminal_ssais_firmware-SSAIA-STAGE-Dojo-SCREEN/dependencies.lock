@@ -1,0 +1,95 @@
+dependencies:
+  cherry-embedded/cherryusb:
+    component_hash: 599e1b332c73c3c7413b3eaea4ba66ebc27305189bf98f8eb888b65e79c44c65
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=5.0'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    targets:
+    - esp32s2
+    - esp32s3
+    - esp32p4
+    version: 1.4.3
+  espressif/button:
+    component_hash: 5357a6a2c0c47fa67eb9a4dad8cbd78f848d05409b3557e49ec9948898655cfb
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.0'
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 3.4.0
+  espressif/cmake_utilities:
+    component_hash: 351350613ceafba240b761b4ea991e0f231ac7a9f59a9ee901f751bddc0bb18f
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.1'
+    source:
+      registry_url: https://components.espressif.com
+      type: service
+    version: 0.5.3
+  espressif/esp-modbus:
+    component_hash: 2168e6b4cbda4d0281a2a2d1a40a3848e231473b2690d73217e3600fd2c98c12
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.3'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.0.16
+  espressif/led_indicator:
+    component_hash: 8ffbd4d0c3f996c10b5d4d23e1f13fa012684e7f97369a0d5442b8d58e6b587f
+    dependencies:
+    - name: espressif/cmake_utilities
+      registry_url: https://components.espressif.com
+      require: private
+      version: 0.*
+    - name: espressif/led_strip
+      registry_url: https://components.espressif.com
+      require: public
+      version: '>=2.5.2'
+    - name: idf
+      require: private
+      version: '>=4.0'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.9.3
+  idf:
+    source:
+      type: idf
+    version: 5.2.1
+  ioterminal/led_strip:
+    dependencies:
+    - name: idf
+      version: '>=4.4'
+    source:
+      path: D:\WorkSpace\IoTerminalGitGroup\IoTerminal_SSAIS_Firmware\SSAIS-Infrared-Touch-Sensor-Both-Hands\components\led_strip
+      type: local
+    version: 2.5.4
+  led_strip:
+    dependencies: []
+    source:
+      path: D:\WorkSpace\IoTerminalGitGroup\IoTerminal_SSAIS_Firmware\SSAIS-Infrared-Touch-Sensor-Both-Hands\components\led_strip
+      type: local
+    version: 2.5.4
+direct_dependencies:
+- cherry-embedded/cherryusb
+- espressif/button
+- espressif/esp-modbus
+- espressif/led_indicator
+- idf
+- ioterminal/led_strip
+manifest_hash: 7a64a36eb1be62e3a6f0e5bdbda479201c6b5a9db67bd3b87647f16b045988bd
+target: esp32s3
+version: 2.0.0
